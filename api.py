@@ -91,3 +91,31 @@ if st.button("Buscar feriados"):
         print(f"Ocorreu um erro: {e}")
 else:
     st.warning("Por favor, digite um ano para buscar.")
+
+st.title("Consulta de IBGE - Informações de um estado com o Brasil API")
+st.write("Digite a sigla de um estado para saber mais informações sobre ele")
+
+estado_input = st.text_input("Digite a sigla do estado (apenas letras)", max_chars=2)
+if st.button("Buscar estado"):
+    if len(estado_input) != 2 or not estado_input.isalpha():
+        st.error("A sigla do estado deve conter apenas 2 letras")
+    else:
+        with st.spinner("Buscando..."):
+            url3 = f"https://brasilapi.com.br/api/ibge/uf/v1/{estado_input}"
+            response = rq.get(url3)
+
+    try:
+        if response.status_code == 200:
+            dados = response.json()
+            st.success("Estado encontrado!")
+            st.write("---")
+            st.markdown(f"**ID:** {dados.get('id', 'N/A')}")
+            st.markdown(f"**Sigla:** {dados.get('sigla', 'N/A')}")
+            st.markdown(f"**Nome:** {dados.get('nome', 'N/A')}")
+            st.markdown(f"**Região:** {dados.get('regiao', {}).get('nome', 'N/A')}")
+        else:
+            print(f"Erro: {response.status_code}")
+    except rq.exceptions.RequestException as e:
+        print(f"Ocorreu um erro: {e}")
+else:
+    st.warning("Por favor, digite a sigla de um estado para buscar.")
