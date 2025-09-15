@@ -60,3 +60,34 @@ if st.button("Buscar DDD"):
         print(f"Ocorreu um erro: {e}")
 else:
     st.warning("Por favor, digite um DDD para buscar.")
+
+st.title("Consulta de feriados com o Brasil API")
+st.write("Digite um ano para saber quais feriados e os dias dos mesmos")
+
+ano_input = st.text_input("Digite o ano (apenas números)", max_chars=4)
+
+if st.button("Buscar feriados"):
+    if len(ano_input) != 4 or not ano_input.isdigit():
+        st.error("O ano deve conter só 4 dígitos e apenas númerois")
+    else:
+        with st.spinner("Buscando..."):
+            url2 = f"https://brasilapi.com.br/api/feriados/v1/{ano_input}"
+            response = rq.get(url2)
+
+    try:
+        if response.status_code == 200:
+            dados = response.json()
+            st.success("Feriados encontrados!")
+            st.write("A data é escrita em AAAA/MM/DD")
+            st.write("---")
+            for i in dados:
+                st.markdown(f"**Data:** {i['date']}")
+                st.markdown(f"**Nome:** {i['name']}")
+                st.markdown(f"**Tipo:** {i['type']}")
+                st.write("---")
+        else:
+            print(f"Erro: {response.status_code}")
+    except rq.exceptions.RequestException as e:
+        print(f"Ocorreu um erro: {e}")
+else:
+    st.warning("Por favor, digite um ano para buscar.")
