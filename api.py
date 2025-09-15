@@ -32,3 +32,16 @@ if st.button("Buscar Cep"):
         print(f"Ocorreu um erro: {e}")
 else:
     st.warning("Por favor, digite um CEP para buscar.")
+
+st.title("Consulta de DDD com o Brasil API")
+st.write("Digite um DDD para saber quais outros lugares o utilizam")
+
+ddd_input = st.text_input("Digite o DDD (apenas números)", max_chars=2)
+
+if st.button("Buscar DDD"):
+    if len(ddd_input) != 2 or not ddd_input.isdigit():
+        st.error("O DDD deve conter apenas 2 dígitos e apenas números")
+    else:
+        with st.spinner("Buscando..."):
+            url1 = f"https://brasilapi.com.br/api/ddd/v1/{ddd_input}"
+            response = rq.get(url1)
