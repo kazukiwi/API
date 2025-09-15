@@ -45,3 +45,18 @@ if st.button("Buscar DDD"):
         with st.spinner("Buscando..."):
             url1 = f"https://brasilapi.com.br/api/ddd/v1/{ddd_input}"
             response = rq.get(url1)
+    try:
+        if response.status_code == 200:
+            dados = response.json()
+            st.success("DDD encontrado!")
+            st.write("---")
+            st.markdown(f"**Estado:** {dados.get('state', 'N/A')}")
+            st.markdown(f"**Cidades:**")
+            for cidade in dados.get('cities', []):
+                st.write(f"- {cidade}")
+        else:
+            print(f"Erro: {response.status_code}")
+    except rq.exceptions.RequestException as e:
+        print(f"Ocorreu um erro: {e}")
+else:
+    st.warning("Por favor, digite um DDD para buscar.")
